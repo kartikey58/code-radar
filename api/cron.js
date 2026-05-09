@@ -16,25 +16,13 @@ export default async function handler(req, res) {
     const lookaheadTime = new Date(now.getTime() + 35 * 60000);
     const messages = [];
 
-    // 1. Fetch Codeforces
-    const cfRes = await fetch('https://codeforces.com/api/contest.list');
-    const cfData = await cfRes.json();
-    if (cfData.status === 'OK') {
-      const upcoming = cfData.result.filter(c => c.phase === 'BEFORE');
-      for (const c of upcoming) {
-        const startTime = new Date(c.startTimeSeconds * 1000);
-        if (startTime > now && startTime <= lookaheadTime) {
-          messages.push(`🚀 *Codeforces Reminder*\n\n${c.name} is starting in less than 30 minutes! Get ready!`);
-        }
-      }
-    }
-
-    // 2. Fetch Clist for LeetCode, CodeChef, AtCoder
+    // 1. Fetch Clist for LeetCode (73) and CodeChef (2)
     if (clistUser && clistKey) {
       const nowStr = now.toISOString().split('.')[0];
       const lookaheadStr = lookaheadTime.toISOString().split('.')[0];
       
-      const url = `https://clist.by/api/v1/contest/?limit=20&start__gt=${encodeURIComponent(nowStr)}&start__lte=${encodeURIComponent(lookaheadStr)}&resource__id__in=2,73,93`;
+      // resource__id__in=2 (CodeChef), 73 (LeetCode)
+      const url = `https://clist.by/api/v1/contest/?limit=20&start__gt=${encodeURIComponent(nowStr)}&start__lte=${encodeURIComponent(lookaheadStr)}&resource__id__in=2,73`;
       
       const clistRes = await fetch(url, {
         headers: { 'Authorization': `ApiKey ${clistUser}:${clistKey}` }
@@ -43,10 +31,7 @@ export default async function handler(req, res) {
       if (clistRes.ok) {
         const clistData = await clistRes.json();
         for (const c of clistData.objects) {
-          let platformName = "Contest";
-          if (c.resource.id === 2) platformName = "CodeChef";
-          if (c.resource.id === 73) platformName = "LeetCode";
-          if (c.resource.id === 93) platformName = "AtCoder";
+          let platformName = c.resource.id === 2 ? "CodeChef" : "LeetCode";
 
           messages.push(`🚀 *${platformName} Reminder*\n\n${c.event} is starting in less than 30 minutes! Get ready!\nLink: ${c.href}`);
         }

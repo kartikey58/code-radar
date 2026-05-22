@@ -14,12 +14,32 @@ export default async function handler(req, res) {
   // Handle sending a single specific contest via POST
   if (req.method === 'POST') {
     try {
+      // Helper to parse request body stream in Node.js raw serverless environment
+      const getRawBody = async (readable) => {
+        const chunks = [];
+        for await (const chunk of readable) {
+          chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+        }
+        return Buffer.concat(chunks).toString('utf8');
+      };
+
       let body = req.body;
+      if (!body) {
+        const raw = await getRawBody(req);
+        if (raw) {
+          try {
+            body = JSON.parse(raw);
+          } catch (e) {
+            body = raw;
+          }
+        }
+      }
+
       if (typeof body === 'string') {
         body = JSON.parse(body);
       }
       
-      const { name, platform, startTime, url } = body;
+      const { name, platform, startTime, url } = body || {};
       if (!name || !platform || !startTime || !url) {
         return res.status(400).json({ error: 'Missing contest details (name, platform, startTime, url) in request body.' });
       }

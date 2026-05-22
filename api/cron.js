@@ -11,6 +11,58 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Twilio WhatsApp credentials missing. Please configure them in Vercel.' });
   }
 
+  // Handle sending a single specific contest via POST
+  if (req.method === 'POST') {
+    try {
+      let body = req.body;
+      if (typeof body === 'string') {
+        body = JSON.parse(body);
+      }
+      
+      const { name, platform, startTime, url } = body;
+      if (!name || !platform || !startTime || !url) {
+        return res.status(400).json({ error: 'Missing contest details (name, platform, startTime, url) in request body.' });
+      }
+
+      // Format start time in IST (+05:30)
+      const formattedStart = new Date(startTime).toLocaleString('en-US', {
+        timeZone: 'Asia/Kolkata',
+        dateStyle: 'medium',
+        timeStyle: 'short'
+      });
+
+      const msg = `🚀 *${platform} Contest Details*\n\n🏆 *${name}*\n📅 Starts: *${formattedStart} (IST)*\n🔗 Link: ${url}`;
+      
+      const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`;
+      const basicAuth = Buffer.from(`${accountSid}:${authToken}`).toString('base64');
+
+      const bodyParams = new URLSearchParams();
+      bodyParams.append('From', twilioNumber);
+      bodyParams.append('To', toNumber);
+      bodyParams.append('Body', msg);
+
+      const twilioRes = await fetch(twilioUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Basic ${basicAuth}`,
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: bodyParams
+      });
+
+      if (twilioRes.ok) {
+        return res.status(200).json({ success: true, messageSent: 1, logs: [msg] });
+      } else {
+        const twilioErr = await twilioRes.text();
+        console.error('Twilio Error:', twilioErr);
+        return res.status(500).json({ error: 'Twilio failed to send message.', details: twilioErr });
+      }
+    } catch (err) {
+      console.error('Single Send Error:', err);
+      return res.status(500).json({ error: 'Internal Server Error', details: err.message });
+    }
+  }
+
   try {
     const { hours } = req.query;
     const lookaheadHours = hours ? parseFloat(hours) : 0.5833; // Default to 35 minutes

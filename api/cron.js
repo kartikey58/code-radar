@@ -21,8 +21,8 @@ export default async function handler(req, res) {
       const nowStr = now.toISOString().split('.')[0];
       const lookaheadStr = lookaheadTime.toISOString().split('.')[0];
       
-      // resource__id__in=2 (CodeChef), 73 (LeetCode)
-      const url = `https://clist.by/api/v1/contest/?limit=20&start__gt=${encodeURIComponent(nowStr)}&start__lte=${encodeURIComponent(lookaheadStr)}&resource__id__in=2,73`;
+      // resource__id__in=1 (Codeforces), 2 (CodeChef), 102 (LeetCode)
+      const url = `https://clist.by/api/v1/contest/?limit=20&start__gt=${encodeURIComponent(nowStr)}&start__lte=${encodeURIComponent(lookaheadStr)}&resource__id__in=1,2,102`;
       
       const clistRes = await fetch(url, {
         headers: { 'Authorization': `ApiKey ${clistUser}:${clistKey}` }
@@ -31,7 +31,11 @@ export default async function handler(req, res) {
       if (clistRes.ok) {
         const clistData = await clistRes.json();
         for (const c of clistData.objects) {
-          let platformName = c.resource.id === 2 ? "CodeChef" : "LeetCode";
+          const resourceId = c.resource.id || c.resource_id;
+          let platformName = "Platform";
+          if (resourceId === 1) platformName = "Codeforces";
+          else if (resourceId === 2) platformName = "CodeChef";
+          else if (resourceId === 102) platformName = "LeetCode";
 
           messages.push(`🚀 *${platformName} Reminder*\n\n${c.event} is starting in less than 30 minutes! Get ready!\nLink: ${c.href}`);
         }

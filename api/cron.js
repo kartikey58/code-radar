@@ -12,11 +12,14 @@ export default async function handler(req, res) {
   }
 
   try {
+    const { hours } = req.query;
+    const lookaheadHours = hours ? parseFloat(hours) : 0.5833; // Default to 35 minutes
+    
     const now = new Date();
-    const lookaheadTime = new Date(now.getTime() + 35 * 60000);
+    const lookaheadTime = new Date(now.getTime() + lookaheadHours * 60 * 60000);
     const messages = [];
 
-    // 1. Fetch Clist for LeetCode (73) and CodeChef (2)
+    // 1. Fetch Clist for LeetCode (102), CodeChef (2), and Codeforces (1)
     if (clistUser && clistKey) {
       const nowStr = now.toISOString().split('.')[0];
       const lookaheadStr = lookaheadTime.toISOString().split('.')[0];
@@ -37,7 +40,18 @@ export default async function handler(req, res) {
           else if (resourceId === 2) platformName = "CodeChef";
           else if (resourceId === 102) platformName = "LeetCode";
 
-          messages.push(`🚀 *${platformName} Reminder*\n\n${c.event} is starting in less than 30 minutes! Get ready!\nLink: ${c.href}`);
+          // Format start time in IST (+05:30)
+          const formattedStart = new Date(c.start).toLocaleString('en-US', {
+            timeZone: 'Asia/Kolkata',
+            dateStyle: 'medium',
+            timeStyle: 'short'
+          });
+
+          const timeMsg = lookaheadHours <= 1
+            ? "is starting in less than 30 minutes! Get ready!"
+            : `starts on *${formattedStart} (IST)*!`;
+
+          messages.push(`🚀 *${platformName} Reminder*\n\n${c.event} ${timeMsg}\nLink: ${c.href}`);
         }
       }
     }

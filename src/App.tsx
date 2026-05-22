@@ -90,7 +90,7 @@ function App() {
                 </div>
               </div>
             ) : (
-              <button className="btn btn-primary" onClick={() => login()} style={{ width: '100%' }}>
+              <button className="btn btn-primary" onClick={login} style={{ width: '100%' }}>
                 <User size={18} /> Link Google
               </button>
             )}

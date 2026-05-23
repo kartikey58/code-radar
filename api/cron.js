@@ -85,7 +85,7 @@ export default async function handler(req, res) {
 
   try {
     const { hours } = req.query;
-    const lookaheadHours = hours ? parseFloat(hours) : 0.5833; // Default to 35 minutes
+    const lookaheadHours = hours ? parseFloat(hours) : 24; // Default to 24 hours for daily cron digest
     
     const now = new Date();
     const lookaheadTime = new Date(now.getTime() + lookaheadHours * 60 * 60000);

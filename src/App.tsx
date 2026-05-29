@@ -7,18 +7,23 @@ import { Contests } from './pages/Contests';
 import { Profile } from './pages/Profile';
 import { Progress } from './pages/Progress';
 import { Onboarding } from './pages/Onboarding';
+import { Landing } from './pages/Landing';
 
 function App() {
   const [accessToken, setAccessToken] = useState<string | null>(sessionStorage.getItem('google_access_token'));
   const [userProfile, setUserProfile] = useState<any>(JSON.parse(sessionStorage.getItem('google_user_profile') || 'null'));
   const [onboardingComplete, setOnboardingComplete] = useState<boolean>(sessionStorage.getItem('onboarding_complete') === 'true');
+  const [isLoadingDB, setIsLoadingDB] = useState<boolean>(false);
 
   const checkUserInDB = async (email: string) => {
+    setIsLoadingDB(true);
     try {
       const res = await axios.get('/api/user-profile', {
         headers: { 'x-user-email': email }
       });
-      if (res.data && Object.keys(res.data).length > 0) {
+      
+      // Ensure we received a JSON object from the API, not an HTML string fallback from Vite
+      if (res.data && typeof res.data === 'object' && !res.data.error && Object.keys(res.data).length > 0) {
         setOnboardingComplete(true);
         sessionStorage.setItem('onboarding_complete', 'true');
         
@@ -30,6 +35,8 @@ function App() {
       }
     } catch (err) {
       console.error("Failed to check user in AWS RDS", err);
+    } finally {
+      setIsLoadingDB(false);
     }
   };
 
@@ -73,6 +80,46 @@ function App() {
     sessionStorage.removeItem('onboarding_complete');
   };
 
+  // State 1: Logged Out -> Show Landing Page
+  if (!userProfile) {
+    return (
+      <BrowserRouter>
+        <Landing onLogin={() => login()} />
+      </BrowserRouter>
+    );
+  }
+
+  // State 2: Logged In but Checking DB or Onboarding NOT complete -> Show Onboarding Page Fullscreen
+  if (isLoadingDB || !onboardingComplete) {
+    return (
+      <BrowserRouter>
+        <div style={{ display: 'flex', minHeight: '100vh', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
+          {isLoadingDB ? (
+            <div style={{ textAlign: 'center' }}>
+              <div className="spinner" style={{ display: 'inline-block', width: '40px', height: '40px', border: '3px solid var(--accent-color)', borderTopColor: 'transparent', borderRadius: '50%', marginBottom: '1rem' }}></div>
+              <h2 style={{ color: 'var(--text-secondary)' }}>Loading your profile...</h2>
+            </div>
+          ) : (
+            <Routes>
+              <Route path="/onboarding" element={
+                <Onboarding 
+                  userEmail={userProfile.email} 
+                  userName={userProfile.name} 
+                  onComplete={() => {
+                    setOnboardingComplete(true);
+                    sessionStorage.setItem('onboarding_complete', 'true');
+                  }} 
+                />
+              } />
+              <Route path="*" element={<Navigate to="/onboarding" />} />
+            </Routes>
+          )}
+        </div>
+      </BrowserRouter>
+    );
+  }
+
+  // State 3: Logged In and Onboarding Complete -> Show App Dashboard
   return (
     <BrowserRouter>
       <div style={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
@@ -112,21 +159,15 @@ function App() {
           </nav>
 
           <div style={{ marginTop: 'auto', paddingTop: '2rem', borderTop: '1px solid var(--card-border)' }}>
-            {userProfile ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '12px' }}>
-                <img src={userProfile.picture} alt="Profile" style={{ width: '32px', height: '32px', borderRadius: '50%' }} />
-                <div style={{ overflow: 'hidden' }}>
-                  <div style={{ fontSize: '0.85rem', fontWeight: 600, whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{userProfile.name}</div>
-                  <button onClick={logout} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '0.75rem', padding: 0, textAlign: 'left' }}>
-                    Sign out
-                  </button>
-                </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '12px' }}>
+              <img src={userProfile.picture} alt="Profile" style={{ width: '32px', height: '32px', borderRadius: '50%' }} />
+              <div style={{ overflow: 'hidden' }}>
+                <div style={{ fontSize: '0.85rem', fontWeight: 600, whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{userProfile.name}</div>
+                <button onClick={logout} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '0.75rem', padding: 0, textAlign: 'left' }}>
+                  Sign out
+                </button>
               </div>
-            ) : (
-              <button className="btn btn-primary" onClick={() => login()} style={{ width: '100%' }}>
-                <User size={18} /> Link Google
-              </button>
-            )}
+            </div>
           </div>
         </div>
 
@@ -139,28 +180,10 @@ function App() {
           )}
           
           <Routes>
-            {userProfile && !onboardingComplete ? (
-              <>
-                <Route path="/onboarding" element={
-                  <Onboarding 
-                    userEmail={userProfile.email} 
-                    userName={userProfile.name} 
-                    onComplete={() => {
-                      setOnboardingComplete(true);
-                      sessionStorage.setItem('onboarding_complete', 'true');
-                    }} 
-                  />
-                } />
-                <Route path="*" element={<Navigate to="/onboarding" />} />
-              </>
-            ) : (
-              <>
-                <Route path="/" element={<Contests accessToken={accessToken} onLoginRequest={login} />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/progress" element={<Progress />} />
-                <Route path="*" element={<Navigate to="/" />} />
-              </>
-            )}
+            <Route path="/" element={<Contests accessToken={accessToken} onLoginRequest={() => login()} />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/progress" element={<Progress />} />
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>
       </div>

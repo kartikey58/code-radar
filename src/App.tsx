@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
-import { Calendar as CalendarIcon, User, LayoutDashboard, LineChart, Trophy } from 'lucide-react';
+import { Calendar as CalendarIcon, User, LayoutDashboard, LineChart, Trophy, FileText } from 'lucide-react';
 import axios from 'axios';
 import { Contests } from './pages/Contests';
 import { Profile } from './pages/Profile';
 import { Progress } from './pages/Progress';
 import { Onboarding } from './pages/Onboarding';
 import { Landing } from './pages/Landing';
+import { Resume } from './pages/Resume';
 
 function App() {
   const [accessToken, setAccessToken] = useState<string | null>(sessionStorage.getItem('google_access_token'));
@@ -156,6 +157,9 @@ function App() {
             <NavLink to="/progress" className={({isActive}) => `nav-link ${isActive ? 'active' : ''}`}>
               <LineChart size={20} /> Progress
             </NavLink>
+            <NavLink to="/resume" className={({isActive}) => `nav-link ${isActive ? 'active' : ''}`}>
+              <FileText size={20} /> Resume
+            </NavLink>
           </nav>
 
           <div style={{ marginTop: 'auto', paddingTop: '2rem', borderTop: '1px solid var(--card-border)' }}>
@@ -183,6 +187,7 @@ function App() {
             <Route path="/" element={<Contests accessToken={accessToken} onLoginRequest={() => login()} />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/progress" element={<Progress />} />
+            <Route path="/resume" element={<Resume />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>

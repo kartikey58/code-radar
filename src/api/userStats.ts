@@ -139,3 +139,91 @@ export async function fetchCodeChefStats(username: string): Promise<UserStats | 
     return null;
   }
 }
+
+export interface GitHubRepo {
+  name: string;
+  description: string;
+  stars: number;
+  language: string;
+  url: string;
+}
+
+export interface GitHubStats {
+  platform: 'GitHub';
+  username: string;
+  avatarUrl: string;
+  name: string;
+  bio: string;
+  publicRepos: number;
+  followers: number;
+  following: number;
+  totalStars: number;
+  topLanguage: string;
+  recentRepos: GitHubRepo[];
+}
+
+export async function fetchGitHubStats(username: string): Promise<GitHubStats | null> {
+  if (!username) return null;
+  try {
+    const [profileRes, reposRes] = await Promise.all([
+      axios.get(`https://api.github.com/users/${username}`),
+      axios.get(`https://api.github.com/users/${username}/repos?per_page=100&sort=updated`)
+    ]);
+
+    const profile = profileRes.data;
+    const repos = reposRes.data || [];
+
+    // Calculate total stars
+    const totalStars = repos.reduce((sum: number, repo: any) => sum + (repo.stargazers_count || 0), 0);
+
+    // Calculate top language
+    const languageCounts: { [key: string]: number } = {};
+    repos.forEach((repo: any) => {
+      if (repo.language) {
+        languageCounts[repo.language] = (languageCounts[repo.language] || 0) + 1;
+      }
+    });
+    let topLanguage = 'None';
+    let maxCount = 0;
+    for (const lang in languageCounts) {
+      if (languageCounts[lang] > maxCount) {
+        maxCount = languageCounts[lang];
+        topLanguage = lang;
+      }
+    }
+
+    // Get top 5 repos sorted by stars, fallback to updated
+    const sortedRepos = [...repos].sort((a: any, b: any) => {
+      if (b.stargazers_count !== a.stargazers_count) {
+        return b.stargazers_count - a.stargazers_count;
+      }
+      return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+    });
+
+    const recentRepos: GitHubRepo[] = sortedRepos.slice(0, 5).map((repo: any) => ({
+      name: repo.name,
+      description: repo.description || 'No description provided.',
+      stars: repo.stargazers_count || 0,
+      language: repo.language || 'Plain Text',
+      url: repo.html_url
+    }));
+
+    return {
+      platform: 'GitHub',
+      username,
+      avatarUrl: profile.avatar_url,
+      name: profile.name || username,
+      bio: profile.bio || 'No bio available.',
+      publicRepos: profile.public_repos || 0,
+      followers: profile.followers || 0,
+      following: profile.following || 0,
+      totalStars,
+      topLanguage,
+      recentRepos
+    };
+  } catch (err) {
+    console.error('GitHub Stats Error', err);
+    return null;
+  }
+}
+

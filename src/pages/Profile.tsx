@@ -63,19 +63,20 @@ function PlatformProfile({ platform, fetchStats, color }: PlatformProfileProps) 
           <span style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: color, display: 'inline-block' }}></span>
           {platform} Profile
         </h3>
-        <div style={{ display: 'flex', gap: '0.5rem', opacity: isExpanded ? 1 : 0, pointerEvents: isExpanded ? 'auto' : 'none', transition: 'opacity 0.2s' }}>
-          <input 
-            type="text" 
-            className="input-field" 
-            placeholder="Username" 
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            style={{ width: '200px', padding: '0.5rem' }}
-          />
-          <button className="btn btn-primary" onClick={handleSave} disabled={loading || !username}>
-            {loading ? <RefreshCw size={16} className="spinner" /> : <Save size={16} />}
-            <span>Save</span>
-          </button>
+        <div style={{ display: 'flex', gap: '0.5rem', opacity: isExpanded ? 1 : 0, transition: 'opacity 0.2s' }}>
+          {username && (
+            <div style={{ 
+              background: 'rgba(255,255,255,0.05)', 
+              padding: '0.4rem 0.8rem', 
+              borderRadius: '8px', 
+              color: 'var(--text-secondary)',
+              fontSize: '0.9rem',
+              display: 'flex',
+              alignItems: 'center'
+            }}>
+              @{username}
+            </div>
+          )}
         </div>
       </div>
 
@@ -211,19 +212,20 @@ function GitHubProfile({ color }: GitHubProfileProps) {
           <span style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: color, display: 'inline-block' }}></span>
           GitHub Profile
         </h3>
-        <div style={{ display: 'flex', gap: '0.5rem', opacity: isExpanded ? 1 : 0, pointerEvents: isExpanded ? 'auto' : 'none', transition: 'opacity 0.2s' }}>
-          <input 
-            type="text" 
-            className="input-field" 
-            placeholder="Username" 
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            style={{ width: '200px', padding: '0.5rem' }}
-          />
-          <button className="btn btn-primary" onClick={handleSave} disabled={loading || !username}>
-            {loading ? <RefreshCw size={16} className="spinner" /> : <Save size={16} />}
-            <span>Save</span>
-          </button>
+        <div style={{ display: 'flex', gap: '0.5rem', opacity: isExpanded ? 1 : 0, transition: 'opacity 0.2s' }}>
+          {username && (
+            <div style={{ 
+              background: 'rgba(255,255,255,0.05)', 
+              padding: '0.4rem 0.8rem', 
+              borderRadius: '8px', 
+              color: 'var(--text-secondary)',
+              fontSize: '0.9rem',
+              display: 'flex',
+              alignItems: 'center'
+            }}>
+              @{username}
+            </div>
+          )}
         </div>
       </div>
 

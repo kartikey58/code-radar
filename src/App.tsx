@@ -1,15 +1,37 @@
-import { useState } from 'react';
-import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
 import { Calendar as CalendarIcon, User, LayoutDashboard, LineChart, Trophy } from 'lucide-react';
 import axios from 'axios';
 import { Contests } from './pages/Contests';
 import { Profile } from './pages/Profile';
 import { Progress } from './pages/Progress';
+import { Onboarding } from './pages/Onboarding';
 
 function App() {
   const [accessToken, setAccessToken] = useState<string | null>(sessionStorage.getItem('google_access_token'));
   const [userProfile, setUserProfile] = useState<any>(JSON.parse(sessionStorage.getItem('google_user_profile') || 'null'));
+  const [onboardingComplete, setOnboardingComplete] = useState<boolean>(sessionStorage.getItem('onboarding_complete') === 'true');
+
+  const checkUserInDB = async (email: string) => {
+    try {
+      const res = await axios.get('/api/user-profile', {
+        headers: { 'x-user-email': email }
+      });
+      if (res.data && Object.keys(res.data).length > 0) {
+        setOnboardingComplete(true);
+        sessionStorage.setItem('onboarding_complete', 'true');
+        
+        if (res.data.githubId) localStorage.setItem('GITHUB_USERNAME', res.data.githubId);
+        if (res.data.leetcodeId) localStorage.setItem('LEETCODE_USERNAME', res.data.leetcodeId);
+        if (res.data.codechefId) localStorage.setItem('CODECHEF_USERNAME', res.data.codechefId);
+      } else {
+        setOnboardingComplete(false);
+      }
+    } catch (err) {
+      console.error("Failed to check user in AWS RDS", err);
+    }
+  };
 
   const fetchUserProfile = async (token: string) => {
     try {
@@ -18,10 +40,19 @@ function App() {
       });
       setUserProfile(res.data);
       sessionStorage.setItem('google_user_profile', JSON.stringify(res.data));
+      if (res.data.email) {
+        checkUserInDB(res.data.email);
+      }
     } catch (err) {
       console.error('Failed to fetch user profile', err);
     }
   };
+
+  useEffect(() => {
+    if (userProfile?.email && !onboardingComplete) {
+      checkUserInDB(userProfile.email);
+    }
+  }, [userProfile]);
 
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => {
@@ -36,8 +67,10 @@ function App() {
   const logout = () => {
     setAccessToken(null);
     setUserProfile(null);
+    setOnboardingComplete(false);
     sessionStorage.removeItem('google_access_token');
     sessionStorage.removeItem('google_user_profile');
+    sessionStorage.removeItem('onboarding_complete');
   };
 
   return (
@@ -106,9 +139,28 @@ function App() {
           )}
           
           <Routes>
-            <Route path="/" element={<Contests accessToken={accessToken} onLoginRequest={login} />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/progress" element={<Progress />} />
+            {userProfile && !onboardingComplete ? (
+              <>
+                <Route path="/onboarding" element={
+                  <Onboarding 
+                    userEmail={userProfile.email} 
+                    userName={userProfile.name} 
+                    onComplete={() => {
+                      setOnboardingComplete(true);
+                      sessionStorage.setItem('onboarding_complete', 'true');
+                    }} 
+                  />
+                } />
+                <Route path="*" element={<Navigate to="/onboarding" />} />
+              </>
+            ) : (
+              <>
+                <Route path="/" element={<Contests accessToken={accessToken} onLoginRequest={login} />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/progress" element={<Progress />} />
+                <Route path="*" element={<Navigate to="/" />} />
+              </>
+            )}
           </Routes>
         </div>
       </div>

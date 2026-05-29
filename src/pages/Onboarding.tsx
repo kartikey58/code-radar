@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { User, Github, Code, Code2 } from 'lucide-react';
+import { User, GitBranch, Code, Code2 } from 'lucide-react';
 
 interface OnboardingProps {
   userEmail: string;
@@ -76,7 +76,7 @@ export function Onboarding({ userEmail, userName, onComplete }: OnboardingProps)
           
           <div>
             <label className="input-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Github size={16} /> GitHub Username
+              <GitBranch size={16} /> GitHub Username
             </label>
             <input 
               type="text" 

@@ -3,7 +3,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianG
 import { fetchCodeforcesStats, fetchLeetCodeStats, fetchCodeChefStats, fetchGitHubStats } from '../api/userStats';
 import type { UserStats, GitHubStats } from '../api/userStats';
 import { format } from 'date-fns';
-import { Trophy, Target, Hash, ChevronDown, ChevronRight, GitBranch, Star, Users, BookOpen, ExternalLink } from 'lucide-react';
+import { Trophy, Target, Hash, ChevronDown, ChevronRight, GitBranch, Star, Users, BookOpen, ExternalLink, Edit2 } from 'lucide-react';
 
 interface PlatformProfileProps {
   platform: 'Codeforces' | 'LeetCode' | 'CodeChef';
@@ -353,12 +353,96 @@ function GitHubProfile({ color }: GitHubProfileProps) {
 }
 
 export function Profile() {
+  const [isEditing, setIsEditing] = useState(false);
+
+  const EditProfileForm = () => {
+    const [githubId, setGithubId] = useState(localStorage.getItem('GITHUB_USERNAME') || '');
+    const [leetcodeId, setLeetcodeId] = useState(localStorage.getItem('LEETCODE_USERNAME') || '');
+    const [codechefId, setCodechefId] = useState(localStorage.getItem('CODECHEF_USERNAME') || '');
+    const [loading, setLoading] = useState(false);
+
+    const handleSave = async () => {
+      const userProfileStr = localStorage.getItem('google_user_profile');
+      if (!userProfileStr) return;
+      const email = JSON.parse(userProfileStr).email;
+      
+      setLoading(true);
+      try {
+        await fetch('/api/user-profile', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-user-email': email
+          },
+          body: JSON.stringify({
+            githubId,
+            leetcodeId,
+            codechefId
+          })
+        });
+        
+        localStorage.setItem('GITHUB_USERNAME', githubId);
+        localStorage.setItem('LEETCODE_USERNAME', leetcodeId);
+        localStorage.setItem('CODECHEF_USERNAME', codechefId);
+        
+        setIsEditing(false);
+        // Force reload to fetch new stats
+        window.location.reload();
+      } catch (e) {
+        alert("Failed to save profile.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    return (
+      <div className="glass-panel" style={{ padding: '1.5rem', marginBottom: '2rem', animation: 'fadeIn 0.3s' }}>
+        <h3 style={{ marginTop: 0, marginBottom: '1.5rem', fontSize: '1.25rem', color: 'var(--accent-color)' }}>Edit Platform Usernames</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', maxWidth: '400px' }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>GitHub Username</label>
+            <input className="input-field" value={githubId} onChange={e => setGithubId(e.target.value)} placeholder="e.g. torvalds" />
+          </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>LeetCode Username</label>
+            <input className="input-field" value={leetcodeId} onChange={e => setLeetcodeId(e.target.value)} placeholder="e.g. neetcode" />
+          </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>CodeChef Username</label>
+            <input className="input-field" value={codechefId} onChange={e => setCodechefId(e.target.value)} placeholder="e.g. tourist" />
+          </div>
+          <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+            <button className="btn btn-primary" onClick={handleSave} disabled={loading} style={{ padding: '0.75rem 1.5rem', flex: 1, display: 'flex', justifyContent: 'center' }}>
+              {loading ? <div className="spinner" style={{ width: '20px', height: '20px', borderWidth: '2px' }}></div> : 'Save Changes'}
+            </button>
+            <button className="btn btn-outline" onClick={() => setIsEditing(false)} disabled={loading} style={{ padding: '0.75rem 1.5rem' }}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div>
-      <div style={{ marginBottom: '2rem' }}>
-        <h2 style={{ fontSize: '1.75rem', fontWeight: 600, margin: 0 }}>User Profile</h2>
-        <p style={{ color: 'var(--text-secondary)' }}>Track your ratings and stats across platforms.</p>
+      <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h2 style={{ fontSize: '1.75rem', fontWeight: 600, margin: 0 }}>User Profile</h2>
+          <p style={{ color: 'var(--text-secondary)' }}>Track your ratings and stats across platforms.</p>
+        </div>
+        {!isEditing && (
+          <button 
+            className="btn btn-outline" 
+            onClick={() => setIsEditing(true)}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.25rem' }}
+          >
+            <Edit2 size={18} /> Edit Platforms
+          </button>
+        )}
       </div>
+
+      {isEditing && <EditProfileForm />}
 
       <PlatformProfile platform="Codeforces" fetchStats={fetchCodeforcesStats} color="var(--cf-color)" />
       <PlatformProfile platform="LeetCode" fetchStats={fetchLeetCodeStats} color="var(--lc-color)" />

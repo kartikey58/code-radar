@@ -33,8 +33,6 @@ export function ContestCard({ contest, onAddCalendar, isAuthenticated, onLogin }
     }
   };
 
-  const [sendingWhatsApp, setSendingWhatsApp] = useState(false);
-  const [whatsappSent, setWhatsappSent] = useState(false);
 
   const handleAdd = () => {
     if (!isAuthenticated) {
@@ -53,36 +51,6 @@ export function ContestCard({ contest, onAddCalendar, isAuthenticated, onLogin }
       });
   };
 
-  const handleSendWhatsApp = async () => {
-    setSendingWhatsApp(true);
-    try {
-      const res = await fetch('/api/cron', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: contest.name,
-          platform: contest.platform,
-          startTime: contest.startTime,
-          url: contest.url
-        })
-      });
-
-      const data = await res.json();
-      if (res.ok && data.success) {
-        setWhatsappSent(true);
-        setTimeout(() => setWhatsappSent(false), 4000);
-      } else {
-        alert(`Error: ${data.error || 'Failed to send contest to WhatsApp.'}`);
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Network Error: Could not connect to the backend api/cron.');
-    } finally {
-      setSendingWhatsApp(false);
-    }
-  };
 
   return (
     <div className="glass-panel hover-lift" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -146,43 +114,7 @@ export function ContestCard({ contest, onAddCalendar, isAuthenticated, onLogin }
           )}
         </button>
 
-        <button 
-          className="btn" 
-          title="Send to WhatsApp"
-          style={{ 
-            padding: '0.5rem', 
-            backgroundColor: whatsappSent ? 'rgba(37, 211, 102, 0.1)' : '#25D366', 
-            color: whatsappSent ? '#25D366' : 'white', 
-            border: whatsappSent ? '1px solid #25D366' : 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '38px',
-            height: '38px',
-            flexShrink: 0,
-            transition: 'background-color 0.2s',
-          }}
-          onClick={handleSendWhatsApp}
-          disabled={sendingWhatsApp}
-          onMouseOver={(e) => {
-            if (!whatsappSent) e.currentTarget.style.backgroundColor = '#128C7E';
-          }}
-          onMouseOut={(e) => {
-            if (!whatsappSent) e.currentTarget.style.backgroundColor = '#25D366';
-          }}
-        >
-          {sendingWhatsApp ? (
-            <span className="spinner"><Clock size={18} /></span>
-          ) : whatsappSent ? (
-            <CheckCircle size={18} />
-          ) : (
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.003 5.324 5.328 0 11.859 0c3.166.002 6.142 1.233 8.377 3.469 2.235 2.236 3.462 5.214 3.46 8.381-.004 6.535-5.33 11.859-11.859 11.859-2.007-.002-3.978-.512-5.714-1.484L0 24zm6.59-4.846c1.666.988 3.308 1.492 5.261 1.493 5.485.002 9.948-4.461 9.95-9.95.001-2.657-1.02-5.155-2.877-7.013C17.067 1.828 14.57 .807 11.91 .807 6.423.807 1.96 5.27 1.957 10.757c-.001 2.036.531 3.738 1.547 5.342l-1.018 3.716 3.818-1.002c.001 0 .001 0 0 0zm11.365-7.79c-.311-.155-1.843-.91-2.128-1.013-.284-.104-.492-.156-.701.156-.208.311-.803.963-.984 1.17-.181.208-.363.234-.674.078-.311-.155-1.316-.484-2.507-1.548-.927-.827-1.553-1.848-1.735-2.16-.182-.311-.02-.479.136-.633.14-.139.311-.364.467-.546.156-.182.208-.312.311-.52.104-.208.052-.39-.026-.546-.078-.156-.701-1.689-.961-2.312-.253-.609-.51-.527-.701-.527-.181 0-.39-.013-.597-.013-.208 0-.546.078-.832.39-.286.312-1.092 1.066-1.092 2.6 0 1.534 1.117 3.016 1.272 3.224.156.208 2.199 3.359 5.328 4.71.745.322 1.326.514 1.778.658.749.238 1.432.205 1.972.125.602-.09 1.843-.754 2.102-1.444.26-.69.26-1.287.182-1.413-.078-.127-.286-.208-.597-.363z"/>
-            </svg>
-          )}
-        </button>
+
       </div>
     </div>
   );

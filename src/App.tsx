@@ -11,9 +11,9 @@ import { Landing } from './pages/Landing';
 import { Resume } from './pages/Resume';
 
 function App() {
-  const [accessToken, setAccessToken] = useState<string | null>(sessionStorage.getItem('google_access_token'));
-  const [userProfile, setUserProfile] = useState<any>(JSON.parse(sessionStorage.getItem('google_user_profile') || 'null'));
-  const [onboardingComplete, setOnboardingComplete] = useState<boolean>(sessionStorage.getItem('onboarding_complete') === 'true');
+  const [accessToken, setAccessToken] = useState<string | null>(localStorage.getItem('google_access_token'));
+  const [userProfile, setUserProfile] = useState<any>(JSON.parse(localStorage.getItem('google_user_profile') || 'null'));
+  const [onboardingComplete, setOnboardingComplete] = useState<boolean>(localStorage.getItem('onboarding_complete') === 'true');
   const [isLoadingDB, setIsLoadingDB] = useState<boolean>(false);
 
   const checkUserInDB = async (email: string) => {
@@ -26,7 +26,7 @@ function App() {
       // Ensure we received a JSON object from the API, not an HTML string fallback from Vite
       if (res.data && typeof res.data === 'object' && !res.data.error && Object.keys(res.data).length > 0) {
         setOnboardingComplete(true);
-        sessionStorage.setItem('onboarding_complete', 'true');
+        localStorage.setItem('onboarding_complete', 'true');
         
         if (res.data.githubId) localStorage.setItem('GITHUB_USERNAME', res.data.githubId);
         if (res.data.leetcodeId) localStorage.setItem('LEETCODE_USERNAME', res.data.leetcodeId);
@@ -47,7 +47,7 @@ function App() {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUserProfile(res.data);
-      sessionStorage.setItem('google_user_profile', JSON.stringify(res.data));
+      localStorage.setItem('google_user_profile', JSON.stringify(res.data));
       if (res.data.email) {
         checkUserInDB(res.data.email);
       }
@@ -65,7 +65,7 @@ function App() {
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => {
       setAccessToken(codeResponse.access_token);
-      sessionStorage.setItem('google_access_token', codeResponse.access_token);
+      localStorage.setItem('google_access_token', codeResponse.access_token);
       fetchUserProfile(codeResponse.access_token);
     },
     onError: (error) => console.log('Login Failed:', error),
@@ -76,9 +76,9 @@ function App() {
     setAccessToken(null);
     setUserProfile(null);
     setOnboardingComplete(false);
-    sessionStorage.removeItem('google_access_token');
-    sessionStorage.removeItem('google_user_profile');
-    sessionStorage.removeItem('onboarding_complete');
+    localStorage.removeItem('google_access_token');
+    localStorage.removeItem('google_user_profile');
+    localStorage.removeItem('onboarding_complete');
   };
 
   // State 1: Logged Out -> Show Landing Page
@@ -108,7 +108,7 @@ function App() {
                   userName={userProfile.name} 
                   onComplete={() => {
                     setOnboardingComplete(true);
-                    sessionStorage.setItem('onboarding_complete', 'true');
+                    localStorage.setItem('onboarding_complete', 'true');
                   }} 
                 />
               } />

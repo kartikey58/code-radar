@@ -3,7 +3,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianG
 import { fetchCodeforcesStats, fetchLeetCodeStats, fetchCodeChefStats, fetchGitHubStats } from '../api/userStats';
 import type { UserStats, GitHubStats } from '../api/userStats';
 import { format } from 'date-fns';
-import { Save, RefreshCw, Trophy, Target, Hash, ChevronDown, ChevronRight, GitBranch, Star, Users, BookOpen, ExternalLink } from 'lucide-react';
+import { Trophy, Target, Hash, ChevronDown, ChevronRight, GitBranch, Star, Users, BookOpen, ExternalLink } from 'lucide-react';
 
 interface PlatformProfileProps {
   platform: 'Codeforces' | 'LeetCode' | 'CodeChef';
@@ -13,15 +13,13 @@ interface PlatformProfileProps {
 
 function PlatformProfile({ platform, fetchStats, color }: PlatformProfileProps) {
   const storageKey = `${platform.toUpperCase()}_USERNAME`;
-  const [username, setUsername] = useState(localStorage.getItem(storageKey) || '');
+  const [username] = useState(localStorage.getItem(storageKey) || '');
   const [stats, setStats] = useState<UserStats | null>(null);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [isExpanded, setIsExpanded] = useState(localStorage.getItem(`${storageKey}_EXPANDED`) !== 'false');
 
   const loadStats = async (user: string) => {
     if (!user) return;
-    setLoading(true);
     setError(false);
     try {
       const data = await fetchStats(user);
@@ -32,8 +30,6 @@ function PlatformProfile({ platform, fetchStats, color }: PlatformProfileProps) 
       }
     } catch (e) {
       setError(true);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -41,10 +37,7 @@ function PlatformProfile({ platform, fetchStats, color }: PlatformProfileProps) 
     if (username) loadStats(username);
   }, []);
 
-  const handleSave = () => {
-    localStorage.setItem(storageKey, username);
-    loadStats(username);
-  };
+
 
   const toggleExpand = () => {
     const newState = !isExpanded;
@@ -162,15 +155,13 @@ interface GitHubProfileProps {
 
 function GitHubProfile({ color }: GitHubProfileProps) {
   const storageKey = 'GITHUB_USERNAME';
-  const [username, setUsername] = useState(localStorage.getItem(storageKey) || '');
+  const [username] = useState(localStorage.getItem(storageKey) || '');
   const [stats, setStats] = useState<GitHubStats | null>(null);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [isExpanded, setIsExpanded] = useState(localStorage.getItem(`${storageKey}_EXPANDED`) !== 'false');
 
   const loadStats = async (user: string) => {
     if (!user) return;
-    setLoading(true);
     setError(false);
     try {
       const data = await fetchGitHubStats(user);
@@ -181,8 +172,6 @@ function GitHubProfile({ color }: GitHubProfileProps) {
       }
     } catch (e) {
       setError(true);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -190,10 +179,7 @@ function GitHubProfile({ color }: GitHubProfileProps) {
     if (username) loadStats(username);
   }, []);
 
-  const handleSave = () => {
-    localStorage.setItem(storageKey, username);
-    loadStats(username);
-  };
+
 
   const toggleExpand = () => {
     const newState = !isExpanded;

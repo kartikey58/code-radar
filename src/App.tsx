@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
-import { Calendar as CalendarIcon, User, LayoutDashboard, LineChart, Trophy, FileText } from 'lucide-react';
+import { Calendar as CalendarIcon, LayoutDashboard, LineChart, Trophy, FileText } from 'lucide-react';
 import axios from 'axios';
 import { Contests } from './pages/Contests';
 import { Profile } from './pages/Profile';

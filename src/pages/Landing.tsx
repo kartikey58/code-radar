@@ -1,5 +1,4 @@
-import { Calendar as CalendarIcon, Trophy, Code, LineChart } from 'lucide-react';
-import { useGoogleLogin } from '@react-oauth/google';
+import { Calendar as CalendarIcon, Trophy, Code } from 'lucide-react';
 
 interface LandingProps {
   onLogin: () => void;

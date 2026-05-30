@@ -35,7 +35,7 @@ export function Resume() {
         text += '\n📌 COMPETITIVE PROGRAMMING (LeetCode)\n';
         text += `  • Solved ${lc.problemsSolved.total} problems (Easy: ${lc.problemsSolved.easy}, Medium: ${lc.problemsSolved.medium}, Hard: ${lc.problemsSolved.hard})\n`;
         if (lc.currentRating) {
-          text += `  • Contest Rating: ${lc.currentRating}  |  Global Rank: ${lc.globalRank}\n`;
+          text += `  • Contest Rating: ${lc.currentRating}\n`;
         }
         if (lc.contestsAttended) {
           text += `  • Participated in ${lc.contestsAttended} contests\n`;
@@ -44,7 +44,7 @@ export function Resume() {
         text += '\n  ✏️  Resume bullet (copy-paste):\n';
         text += `  Solved ${lc.problemsSolved.total}+ problems on LeetCode (Medium: ${lc.problemsSolved.medium}, Hard: ${lc.problemsSolved.hard}); `;
         if (lc.currentRating) {
-          text += `Contest rating ${lc.currentRating}, ranked ${lc.globalRank} globally.\n`;
+          text += `Contest rating ${lc.currentRating}.\n`;
         } else {
           text += `Active problem solver.\n`;
         }

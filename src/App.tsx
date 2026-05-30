@@ -85,7 +85,7 @@ function App() {
   if (!userProfile) {
     return (
       <BrowserRouter>
-        <Landing onLogin={() => login()} />
+        <Landing onLogin={login} />
       </BrowserRouter>
     );
   }
@@ -184,7 +184,7 @@ function App() {
           )}
           
           <Routes>
-            <Route path="/" element={<Contests accessToken={accessToken} onLoginRequest={() => login()} />} />
+            <Route path="/" element={<Contests accessToken={accessToken} onLoginRequest={login} />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/progress" element={<Progress />} />
             <Route path="/resume" element={<Resume />} />

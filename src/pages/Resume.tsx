@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FileText, Copy, Check, Download, Loader2 } from 'lucide-react';
-import { fetchLeetCodeStats, fetchCodeforcesStats, fetchGitHubStats } from '../api/userStats';
+import { fetchLeetCodeStats, fetchCodeforcesStats, fetchGitHubStats, fetchCodeChefStats } from '../api/userStats';
 
 export function Resume() {
   const [loading, setLoading] = useState(false);
@@ -17,12 +17,14 @@ export function Resume() {
     const lcUser = localStorage.getItem('LEETCODE_USERNAME');
     const cfUser = localStorage.getItem('CODEFORCES_USERNAME') || localStorage.getItem('LEETCODE_USERNAME'); // Fallback if they use same
     const ghUser = localStorage.getItem('GITHUB_USERNAME');
+    const ccUser = localStorage.getItem('CODECHEF_USERNAME');
 
     try {
-      const [lc, cf, gh] = await Promise.all([
+      const [lc, cf, gh, cc] = await Promise.all([
         lcUser ? fetchLeetCodeStats(lcUser) : null,
         cfUser ? fetchCodeforcesStats(cfUser) : null,
-        ghUser ? fetchGitHubStats(ghUser) : null
+        ghUser ? fetchGitHubStats(ghUser) : null,
+        ccUser ? fetchCodeChefStats(ccUser) : null
       ]);
 
       let text = '';
@@ -62,6 +64,18 @@ export function Resume() {
         text += `  Codeforces rating ${cf.maxRating}; solved ${cf.problemsSolved.total}+ problems across ${cf.contestsAttended} rated contests.\n`;
       }
 
+      if (cc) {
+        text += '\n📌 COMPETITIVE PROGRAMMING (CodeChef)\n';
+        text += `  • Handle: ${ccUser}\n`;
+        text += `  • Current Rating: ${cc.currentRating}\n`;
+        text += `  • Max Rating: ${cc.maxRating}\n`;
+        text += `  • Fully Solved: ${cc.problemsSolved.total}\n`;
+        text += `  • Contests participated: ${cc.contestsAttended}\n`;
+
+        text += '\n  ✏️  Resume bullet (copy-paste):\n';
+        text += `  CodeChef highest rating ${cc.maxRating}; fully solved ${cc.problemsSolved.total}+ problems.\n`;
+      }
+
       if (gh) {
         text += '\n📌 OPEN SOURCE / GITHUB\n';
         text += `  • Public repositories: ${gh.publicRepos}\n`;
@@ -88,6 +102,7 @@ export function Resume() {
       text += '============================================================\n';
       if (lcUser) text += `  LeetCode:   https://leetcode.com/${lcUser}\n`;
       if (cfUser) text += `  Codeforces: https://codeforces.com/profile/${cfUser}\n`;
+      if (ccUser) text += `  CodeChef:   https://www.codechef.com/users/${ccUser}\n`;
       if (ghUser) text += `  GitHub:     https://github.com/${ghUser}\n`;
       text += '============================================================\n';
 

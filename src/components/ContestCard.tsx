@@ -36,21 +36,21 @@ export function ContestCard({ contest, onAddCalendar, isAuthenticated, onLogin }
   const [sendingWhatsApp, setSendingWhatsApp] = useState(false);
   const [whatsappSent, setWhatsappSent] = useState(false);
 
-  const handleAdd = async () => {
+  const handleAdd = () => {
     if (!isAuthenticated) {
       onLogin();
       return;
     }
     setLoading(true);
-    try {
-      await onAddCalendar(contest, reminder);
-      setAdded(true);
-    } catch (err) {
-      alert('Failed to add to calendar. See console.');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+    onAddCalendar(contest, reminder)
+      .then(() => setAdded(true))
+      .catch((err) => {
+        alert('Failed to add to calendar. See console.');
+        console.error(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleSendWhatsApp = async () => {

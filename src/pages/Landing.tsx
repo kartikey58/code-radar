@@ -19,8 +19,8 @@ export function Landing({ onLogin }: LandingProps) {
       {/* Navigation */}
       <nav className="relative z-10 px-8 py-6 flex justify-between items-center max-w-7xl w-full mx-auto backdrop-blur-xl border-b border-white/5 sticky top-0 bg-[#0b1326]/50">
         <div className="flex items-center gap-3 cursor-pointer">
-          <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-            <CalendarIcon size={24} className="text-white" />
+          <div className="w-10 h-10 flex items-center justify-center">
+            <img src="/logo.svg" alt="Code Radar Logo" className="w-full h-full object-contain" />
           </div>
           <h1 className="font-heading font-bold text-2xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
             Code Radar

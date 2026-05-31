@@ -134,8 +134,8 @@ function App() {
         {/* Sidebar */}
         <div className="relative z-20 w-64 bg-[#131b2e]/80 backdrop-blur-xl border-r border-white/5 p-6 flex flex-col shrink-0 transition-all duration-300">
           <div className="flex items-center gap-3 mb-10">
-            <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-              <CalendarIcon size={24} className="text-white" />
+            <div className="w-10 h-10 flex items-center justify-center">
+              <img src="/logo.svg" alt="Code Radar Logo" className="w-full h-full object-contain" />
             </div>
             <h1 className="font-heading font-bold text-xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
               Code Radar

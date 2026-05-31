@@ -123,51 +123,52 @@ function App() {
   // State 3: Logged In and Onboarding Complete -> Show App Dashboard
   return (
     <BrowserRouter>
-      <div style={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
+      <div className="flex min-h-screen w-full bg-[#0b1326] text-white font-body overflow-hidden selection:bg-blue-500/30">
+        
+        {/* Dynamic Background Blurs */}
+        <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-[10%] left-[20%] w-[40%] h-[40%] rounded-full bg-blue-600/10 blur-[120px]" />
+          <div className="absolute bottom-[10%] right-[10%] w-[30%] h-[30%] rounded-full bg-purple-600/10 blur-[100px]" />
+        </div>
+
         {/* Sidebar */}
-        <div style={{ 
-          width: '260px', 
-          backgroundColor: 'rgba(20, 26, 38, 0.8)', 
-          borderRight: '1px solid var(--card-border)',
-          padding: '2rem 1.5rem',
-          display: 'flex',
-          flexDirection: 'column'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '3rem' }}>
-            <div style={{ 
-              background: 'linear-gradient(135deg, var(--accent-color), var(--cc-color))',
-              padding: '0.6rem',
-              borderRadius: '10px',
-              display: 'flex'
-            }}>
-              <CalendarIcon size={24} color="white" />
+        <div className="relative z-20 w-64 bg-[#131b2e]/80 backdrop-blur-xl border-r border-white/5 p-6 flex flex-col shrink-0 transition-all duration-300">
+          <div className="flex items-center gap-3 mb-10">
+            <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+              <CalendarIcon size={24} className="text-white" />
             </div>
-            <h1 className="text-gradient" style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>
-              Radar
+            <h1 className="font-heading font-bold text-xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+              Code Radar
             </h1>
           </div>
 
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', flexGrow: 1 }}>
-            <NavLink to="/" end className={({isActive}) => `nav-link ${isActive ? 'active' : ''}`}>
+          <button className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-semibold mb-8 transition-colors shadow-lg shadow-blue-500/20">
+            <Trophy size={18} />
+            <span>Join Contest</span>
+          </button>
+
+          <nav className="flex flex-col gap-2 flex-grow">
+            <NavLink to="/" end className={({isActive}) => `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${isActive ? 'bg-blue-500/15 text-blue-400' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}>
               <LayoutDashboard size={20} /> Contests
             </NavLink>
-            <NavLink to="/profile" className={({isActive}) => `nav-link ${isActive ? 'active' : ''}`}>
+            <NavLink to="/profile" className={({isActive}) => `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${isActive ? 'bg-blue-500/15 text-blue-400' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}>
               <Trophy size={20} /> Profile
             </NavLink>
-            <NavLink to="/progress" className={({isActive}) => `nav-link ${isActive ? 'active' : ''}`}>
+            <NavLink to="/progress" className={({isActive}) => `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${isActive ? 'bg-blue-500/15 text-blue-400' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}>
               <LineChart size={20} /> Progress
             </NavLink>
-            <NavLink to="/resume" className={({isActive}) => `nav-link ${isActive ? 'active' : ''}`}>
+            <NavLink to="/resume" className={({isActive}) => `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${isActive ? 'bg-blue-500/15 text-blue-400' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}>
               <FileText size={20} /> Resume
             </NavLink>
           </nav>
 
-          <div style={{ marginTop: 'auto', paddingTop: '2rem', borderTop: '1px solid var(--card-border)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '12px' }}>
-              <img src={userProfile.picture} alt="Profile" style={{ width: '32px', height: '32px', borderRadius: '50%' }} />
-              <div style={{ overflow: 'hidden' }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: 600, whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{userProfile.name}</div>
-                <button onClick={logout} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '0.75rem', padding: 0, textAlign: 'left' }}>
+          {/* User Shelf */}
+          <div className="mt-auto pt-6 border-t border-white/5">
+            <div className="flex items-center gap-3 p-3 bg-white/5 rounded-2xl border border-white/5 hover:border-white/10 transition-colors">
+              <img src={userProfile.picture} alt="Profile" className="w-10 h-10 rounded-full border border-white/10" />
+              <div className="overflow-hidden flex-1">
+                <div className="text-sm font-semibold truncate text-white">{userProfile.name}</div>
+                <button onClick={logout} className="text-xs text-slate-400 hover:text-red-400 transition-colors text-left p-0 m-0 cursor-pointer">
                   Sign out
                 </button>
               </div>
@@ -176,9 +177,9 @@ function App() {
         </div>
 
         {/* Main Content */}
-        <div style={{ flexGrow: 1, padding: '2rem 3rem', height: '100vh', overflowY: 'auto' }}>
+        <div className="relative z-10 flex-1 h-screen overflow-y-auto px-8 md:px-12 py-8">
           {!localStorage.getItem('VITE_GOOGLE_CLIENT_ID') && !import.meta.env.VITE_GOOGLE_CLIENT_ID && (
-            <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444', color: '#ef4444', padding: '1rem', borderRadius: '8px', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl mb-8 flex items-center gap-3">
               <span>⚠️ Google OAuth Client ID is missing.</span>
             </div>
           )}

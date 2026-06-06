@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Terminal, Code2, Network, ShieldCheck, ArrowRight, Utensils } from 'lucide-react';
 import { motion } from 'framer-motion';
+import type { Variants } from 'framer-motion';
 
 interface OnboardingProps {
   userEmail: string;
@@ -54,7 +55,7 @@ export function Onboarding({ userEmail, userName, onComplete }: OnboardingProps)
     }
   };
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0, scale: 0.95 },
     visible: { 
       opacity: 1, 
@@ -63,7 +64,7 @@ export function Onboarding({ userEmail, userName, onComplete }: OnboardingProps)
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 }
   };

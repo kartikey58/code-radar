@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { RefreshCw, Calendar, Clock, ExternalLink, CalendarPlus, CheckCircle, Activity, ArrowRight, Zap } from 'lucide-react';
+import { RefreshCw, Calendar, ExternalLink, CalendarPlus, CheckCircle, Zap } from 'lucide-react';
 import { format, isPast, isFuture, differenceInHours, differenceInDays } from 'date-fns';
 import { motion } from 'framer-motion';
 import { fetchAllContests } from '../api/contests';
@@ -67,7 +67,7 @@ export function Contests({ accessToken, onLoginRequest }: ContestsProps) {
     filter === 'All' || c.platform === filter
   );
 
-  const activeContests = contests.filter(c => isPast(c.startTime) && isFuture(c.endTime));
+  const activeContests = contests.filter(c => isPast(c.startTime) && isFuture(new Date(c.startTime.getTime() + c.durationSeconds * 1000)));
   const upcomingContests = contests.filter(c => isFuture(c.startTime));
   
   // Find next major event (Codeforces or LeetCode preferred)
@@ -202,7 +202,7 @@ export function Contests({ accessToken, onLoginRequest }: ContestsProps) {
               </thead>
               <tbody className="divide-y divide-white/5 text-sm">
                 {filteredContests.map((contest, i) => {
-                  const isActive = isPast(contest.startTime) && isFuture(contest.endTime);
+                  const isActive = isPast(contest.startTime) && isFuture(new Date(contest.startTime.getTime() + contest.durationSeconds * 1000));
                   return (
                     <motion.tr 
                       initial={{ opacity: 0, y: 10 }}

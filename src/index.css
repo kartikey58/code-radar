@@ -1,17 +1,6 @@
-@import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
-
-@theme {
-  --font-heading: 'Space Grotesk', sans-serif;
-  --font-body: 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --color-bg-base: #0b1326;
-  --color-surface: #131b2e;
-  --color-primary: #3b82f6;
-  --color-primary-hover: #2563eb;
-  --color-cyan-glow: rgba(34, 211, 238, 0.5);
-}
-
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 :root {
   --bg-color: #0b1326;
   --card-bg: rgba(19, 27, 46, 0.7);

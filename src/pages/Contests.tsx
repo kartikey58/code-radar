@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { RefreshCw, Calendar, ExternalLink, CalendarPlus, CheckCircle, Zap } from 'lucide-react';
+import { RefreshCw, Calendar, ExternalLink, CalendarPlus, CheckCircle, Zap, Bookmark } from 'lucide-react';
 import { format, isPast, isFuture, differenceInHours, differenceInDays } from 'date-fns';
 import { motion } from 'framer-motion';
 import { fetchAllContests } from '../api/contests';
@@ -9,9 +9,11 @@ import { createGoogleCalendarEvent } from '../api/googleCalendar';
 interface ContestsProps {
   accessToken: string | null;
   onLoginRequest: () => void;
+  savedContests: Contest[];
+  onToggleSave: (contest: Contest) => void;
 }
 
-export function Contests({ accessToken, onLoginRequest }: ContestsProps) {
+export function Contests({ accessToken, onLoginRequest, savedContests, onToggleSave }: ContestsProps) {
   const [contests, setContests] = useState<Contest[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>('All');
@@ -252,6 +254,18 @@ export function Contests({ accessToken, onLoginRequest }: ContestsProps) {
                           >
                             <ExternalLink size={16} />
                           </a>
+
+                          <button 
+                            onClick={() => onToggleSave(contest)}
+                            className={`p-2 rounded-lg transition-colors ${
+                              savedContests.some(c => c.id === contest.id) 
+                                ? 'bg-blue-500/20 text-blue-400 hover:bg-blue-500/30' 
+                                : 'bg-white/5 text-slate-300 hover:bg-white/10'
+                            }`}
+                            title={savedContests.some(c => c.id === contest.id) ? "Remove from Library" : "Add to Library"}
+                          >
+                            <Bookmark size={16} className={savedContests.some(c => c.id === contest.id) ? "fill-current" : ""} />
+                          </button>
                           
                           <select 
                             value={reminders[contest.id] || 30}

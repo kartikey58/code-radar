@@ -16,6 +16,21 @@
   --github-color: #8b949e;
 }
 
+html.light {
+  --bg-color: #f8fafc;
+  --card-bg: rgba(255, 255, 255, 0.7);
+  --card-border: rgba(15, 23, 42, 0.08);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --accent-color: #3b82f6;
+  --accent-hover: #1d4ed8;
+  --cf-color: #dc2626;
+  --lc-color: #d97706;
+  --cc-color: #7c3aed;
+  --ac-color: #059669;
+  --github-color: #4b5563;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -33,6 +48,12 @@ body {
     radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.12), transparent 25%);
   background-attachment: fixed;
   min-height: 100vh;
+}
+
+html.light body {
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.06), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.06), transparent 25%);
 }
 
 button {
@@ -112,6 +133,10 @@ button {
   background-color: rgba(255, 255, 255, 0.05);
 }
 
+html.light .btn-outline:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
 .input-field {
   width: 100%;
   padding: 0.75rem 1rem;
@@ -122,6 +147,12 @@ button {
   font-family: inherit;
   font-size: 0.95rem;
   transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+html.light .input-field {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-primary);
+  border-color: rgba(0, 0, 0, 0.15);
 }
 
 .input-field:focus {

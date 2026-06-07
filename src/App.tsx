@@ -19,7 +19,17 @@ function App() {
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   const [savedContests, setSavedContests] = useState<Contest[]>(() => {
     try {
-      return JSON.parse(localStorage.getItem('saved_contests') || '[]');
+      const saved = JSON.parse(localStorage.getItem('saved_contests') || '[]');
+      const now = new Date().getTime();
+      const active = saved.filter((c: any) => {
+        const start = new Date(c.startTime).getTime();
+        const end = start + (c.durationSeconds || 0) * 1000;
+        return end > now;
+      });
+      if (active.length !== saved.length) {
+        localStorage.setItem('saved_contests', JSON.stringify(active));
+      }
+      return active;
     } catch {
       return [];
     }
@@ -39,6 +49,28 @@ function App() {
     }
     localStorage.setItem('theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    const purgePassedContests = () => {
+      setSavedContests(prev => {
+        const now = new Date().getTime();
+        const active = prev.filter(c => {
+          const start = new Date(c.startTime).getTime();
+          const end = start + (c.durationSeconds || 0) * 1000;
+          return end > now;
+        });
+        if (active.length !== prev.length) {
+          localStorage.setItem('saved_contests', JSON.stringify(active));
+          return active;
+        }
+        return prev;
+      });
+    };
+
+    purgePassedContests();
+    const interval = setInterval(purgePassedContests, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const toggleSaveContest = (contest: Contest) => {
     setSavedContests(prev => {

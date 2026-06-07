@@ -59,7 +59,7 @@ function PlatformProfile({ platform, fetchStats, color }: PlatformProfileProps) 
         <div style={{ display: 'flex', gap: '0.5rem', opacity: isExpanded ? 1 : 0, transition: 'opacity 0.2s' }}>
           {username && (
             <div style={{ 
-              background: 'rgba(255,255,255,0.05)', 
+              background: 'var(--metric-bg)', 
               padding: '0.4rem 0.8rem', 
               borderRadius: '8px', 
               color: 'var(--text-secondary)',
@@ -84,27 +84,27 @@ function PlatformProfile({ platform, fetchStats, color }: PlatformProfileProps) 
           {stats && (
             <>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-                <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
+                <div style={{ background: 'var(--metric-bg)', border: '1px solid var(--card-border)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
                   <Trophy size={24} color={color} style={{ margin: '0 auto 0.5rem' }} />
                   <div style={{ fontSize: '2rem', fontWeight: 700 }}>{stats.currentRating}</div>
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Current Rating</div>
                 </div>
                 
                 {stats.maxRating > 0 && (
-                  <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
+                  <div style={{ background: 'var(--metric-bg)', border: '1px solid var(--card-border)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
                     <Target size={24} color={color} style={{ margin: '0 auto 0.5rem' }} />
                     <div style={{ fontSize: '2rem', fontWeight: 700 }}>{stats.maxRating}</div>
                     <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Max Rating</div>
                   </div>
                 )}
                 
-                <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
+                <div style={{ background: 'var(--metric-bg)', border: '1px solid var(--card-border)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
                   <Hash size={24} color={color} style={{ margin: '0 auto 0.5rem' }} />
                   <div style={{ fontSize: '2rem', fontWeight: 700 }}>{stats.contestsAttended}</div>
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Contests Attended</div>
                 </div>
 
-                <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
+                <div style={{ background: 'var(--metric-bg)', border: '1px solid var(--card-border)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
                   <div style={{ fontSize: '2rem', fontWeight: 700, color: color }}>{stats.problemsSolved.total}</div>
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Problems Solved</div>
                 </div>
@@ -114,7 +114,7 @@ function PlatformProfile({ platform, fetchStats, color }: PlatformProfileProps) 
                 <h4 style={{ marginBottom: '1rem', fontSize: '1rem', color: 'var(--text-secondary)' }}>Rating History</h4>
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={stats.ratingHistory}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--card-border)" />
                     <XAxis 
                       dataKey="timestamp" 
                       tickFormatter={(tick) => format(new Date(tick), 'MMM yyyy')}
@@ -201,7 +201,7 @@ function GitHubProfile({ color }: GitHubProfileProps) {
         <div style={{ display: 'flex', gap: '0.5rem', opacity: isExpanded ? 1 : 0, transition: 'opacity 0.2s' }}>
           {username && (
             <div style={{ 
-              background: 'rgba(255,255,255,0.05)', 
+              background: 'var(--metric-bg)', 
               padding: '0.4rem 0.8rem', 
               borderRadius: '8px', 
               color: 'var(--text-secondary)',
@@ -229,7 +229,8 @@ function GitHubProfile({ color }: GitHubProfileProps) {
               <div style={{ 
                 display: 'flex', 
                 gap: '1.5rem', 
-                background: 'rgba(255,255,255,0.03)', 
+                background: 'var(--metric-bg)', 
+                border: '1px solid var(--card-border)',
                 padding: '1.5rem', 
                 borderRadius: '16px', 
                 marginBottom: '1.5rem',
@@ -262,19 +263,19 @@ function GitHubProfile({ color }: GitHubProfileProps) {
 
               {/* Metrics Grid */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-                <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
+                <div style={{ background: 'var(--metric-bg)', border: '1px solid var(--card-border)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
                   <BookOpen size={24} color={color} style={{ margin: '0 auto 0.5rem' }} />
                   <div style={{ fontSize: '2rem', fontWeight: 700 }}>{stats.publicRepos}</div>
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Public Repositories</div>
                 </div>
                 
-                <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
+                <div style={{ background: 'var(--metric-bg)', border: '1px solid var(--card-border)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
                   <Star size={24} color={color} style={{ margin: '0 auto 0.5rem' }} />
                   <div style={{ fontSize: '2rem', fontWeight: 700 }}>{stats.totalStars}</div>
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Total Stars</div>
                 </div>
                 
-                <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
+                <div style={{ background: 'var(--metric-bg)', border: '1px solid var(--card-border)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
                   <Users size={24} color={color} style={{ margin: '0 auto 0.5rem' }} />
                   <div style={{ fontSize: '2.5rem', display: 'flex', justifyContent: 'center', alignItems: 'baseline', gap: '0.25rem' }}>
                     <span style={{ fontSize: '2rem', fontWeight: 700 }}>{stats.followers}</span>
@@ -283,7 +284,7 @@ function GitHubProfile({ color }: GitHubProfileProps) {
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Followers / Following</div>
                 </div>
 
-                <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
+                <div style={{ background: 'var(--metric-bg)', border: '1px solid var(--card-border)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
                   <div style={{ fontSize: '2rem', fontWeight: 700, color: color }}>{stats.topLanguage}</div>
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Top Primary Language</div>
                 </div>

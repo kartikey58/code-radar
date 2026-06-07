@@ -14,21 +14,23 @@
   --cc-color: #8b5cf6;
   --ac-color: #10b981;
   --github-color: #8b949e;
+  --metric-bg: rgba(0, 0, 0, 0.20);
 }
 
 html.light {
-  --bg-color: #f8fafc;
-  --card-bg: rgba(255, 255, 255, 0.7);
-  --card-border: rgba(15, 23, 42, 0.08);
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --accent-color: #3b82f6;
-  --accent-hover: #1d4ed8;
-  --cf-color: #dc2626;
-  --lc-color: #d97706;
-  --cc-color: #7c3aed;
-  --ac-color: #059669;
-  --github-color: #4b5563;
+  --bg-color: #fdf6e3;
+  --card-bg: rgba(238, 232, 213, 0.75);
+  --card-border: rgba(7, 54, 66, 0.12);
+  --text-primary: #073642;
+  --text-secondary: #586e75;
+  --accent-color: #268bd2;
+  --accent-hover: #1b6395;
+  --cf-color: #dc322f;
+  --lc-color: #cb4b16;
+  --cc-color: #6c71c4;
+  --ac-color: #859900;
+  --github-color: #586e75;
+  --metric-bg: rgba(7, 54, 66, 0.05);
 }
 
 * {
@@ -52,8 +54,8 @@ body {
 
 html.light body {
   background-image: 
-    radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.06), transparent 25%),
-    radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.06), transparent 25%);
+    radial-gradient(circle at 15% 50%, rgba(38, 139, 210, 0.05), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(108, 113, 196, 0.05), transparent 25%);
 }
 
 button {

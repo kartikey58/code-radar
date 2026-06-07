@@ -72,11 +72,11 @@ export function Progress() {
           <h3 style={{ marginBottom: '1.5rem', color: 'var(--lc-color)' }}>LeetCode Problems Solved</h3>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={difficultyData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--card-border)" />
               <XAxis dataKey="name" stroke="var(--text-secondary)" />
               <YAxis stroke="var(--text-secondary)" />
               <Tooltip 
-                cursor={{ fill: 'rgba(255,255,255,0.05)' }} 
+                cursor={{ fill: 'var(--card-border)' }} 
                 contentStyle={{ backgroundColor: 'var(--bg-color)', border: '1px solid var(--card-border)', borderRadius: '8px' }}
               />
               <Bar dataKey="count" radius={[4, 4, 0, 0]}>
@@ -93,11 +93,11 @@ export function Progress() {
           <h3 style={{ marginBottom: '1.5rem', color: 'var(--text-primary)' }}>Contests Per Month (LeetCode)</h3>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={participationData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--card-border)" />
               <XAxis dataKey="month" stroke="var(--text-secondary)" fontSize={12} />
               <YAxis allowDecimals={false} stroke="var(--text-secondary)" />
               <Tooltip 
-                cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                cursor={{ fill: 'var(--card-border)' }}
                 contentStyle={{ backgroundColor: 'var(--bg-color)', border: '1px solid var(--card-border)', borderRadius: '8px' }}
               />
               <Bar dataKey="count" fill="var(--accent-color)" radius={[4, 4, 0, 0]} />

@@ -156,7 +156,7 @@ export function Resume() {
       <div className="glass-panel" style={{ overflow: 'hidden', position: 'relative' }}>
         {/* Toolbar */}
         <div style={{ 
-          background: 'rgba(0,0,0,0.4)', 
+          background: 'var(--metric-bg)', 
           padding: '0.75rem 1.5rem', 
           borderBottom: '1px solid var(--card-border)',
           display: 'flex',
@@ -189,7 +189,7 @@ export function Resume() {
         </div>
 
         {/* Editor Area */}
-        <div style={{ padding: '2rem', background: '#0d1117', minHeight: '400px' }}>
+        <div style={{ padding: '2rem', background: 'var(--bg-color)', minHeight: '400px' }}>
           {loading ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '300px', color: 'var(--text-secondary)' }}>
               <Loader2 size={48} className="spinner" style={{ marginBottom: '1rem', color: 'var(--accent-color)' }} />
@@ -198,7 +198,7 @@ export function Resume() {
           ) : (
             <pre style={{ 
               margin: 0, 
-              color: '#c9d1d9', 
+              color: 'var(--text-primary)', 
               fontFamily: '"Fira Code", "Consolas", monospace',
               fontSize: '0.9rem',
               lineHeight: 1.6,
